@@ -15,7 +15,7 @@ cd PTTKPM25-26_N05_Nhom-1
 
 ### 2. Backend Setup
 ```bash
-cd BE-Project
+cd BE
 # Open Lumiere.sln in Visual Studio or restore packages via CLI:
 dotnet restore
 
@@ -31,7 +31,7 @@ dotnet run
 ### 3. Frontend Setup
 Open a new terminal window:
 ```bash
-cd Frontend
+cd FE
 
 # Install dependencies
 npm install
