@@ -10,7 +10,7 @@ Follow these instructions to set up the project locally for development and test
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/hoangnam140205/PTTKPM25-26_N05_Nhom-1
-cd Lumiere-Stay
+cd PTTKPM25-26_N05_Nhom-1
 ```
 
 ### 2. Backend Setup
