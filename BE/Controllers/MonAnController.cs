@@ -1,5 +1,6 @@
 using BE.Models;
 using BE.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -25,6 +26,7 @@ namespace BE.Controllers
         }
 
         // POST: api/admin/MonAn (Thêm món mới)
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> ThemMonAn([FromBody] MonAn monAn)
         {
@@ -33,6 +35,7 @@ namespace BE.Controllers
         }
 
         // PUT: api/admin/MonAn/{id} (Sửa thông tin món)
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> CapNhatMonAn(string id, [FromBody] MonAn monAn)
         {
@@ -43,6 +46,7 @@ namespace BE.Controllers
         }
 
         // DELETE: api/admin/MonAn/{id} (Xóa món)
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> XoaMonAn(string id)
         {

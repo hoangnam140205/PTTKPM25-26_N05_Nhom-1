@@ -64,6 +64,30 @@ namespace BE.Migrations
                     b.ToTable("ChiTietHoaDons");
                 });
 
+            modelBuilder.Entity("BE.Models.ChiTietPhieuNhap", b =>
+                {
+                    b.Property<string>("MaPN")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MaNL")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<float>("DonGia")
+                        .HasColumnType("real");
+
+                    b.Property<float>("SoLuong")
+                        .HasColumnType("real");
+
+                    b.Property<float>("ThanhTien")
+                        .HasColumnType("real");
+
+                    b.HasKey("MaPN", "MaNL");
+
+                    b.HasIndex("MaNL");
+
+                    b.ToTable("ChiTietPhieuNhaps");
+                });
+
             modelBuilder.Entity("BE.Models.HoaDon", b =>
                 {
                     b.Property<string>("MaHD")
@@ -162,6 +186,27 @@ namespace BE.Migrations
                     b.ToTable("MonAns");
                 });
 
+            modelBuilder.Entity("BE.Models.NguyenLieu", b =>
+                {
+                    b.Property<string>("MaNL")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DonViTinh")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("SoLuongTon")
+                        .HasColumnType("real");
+
+                    b.Property<string>("TenNL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MaNL");
+
+                    b.ToTable("NguyenLieus");
+                });
+
             modelBuilder.Entity("BE.Models.NhanVien", b =>
                 {
                     b.Property<string>("MaNV")
@@ -187,6 +232,26 @@ namespace BE.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("NhanVien");
 
                     b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("BE.Models.PhieuNhap", b =>
+                {
+                    b.Property<string>("MaPN")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("NgayNhap")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NguoiNhap")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("TongTien")
+                        .HasColumnType("real");
+
+                    b.HasKey("MaPN");
+
+                    b.ToTable("PhieuNhaps");
                 });
 
             modelBuilder.Entity("BE.Models.Admin", b =>
@@ -220,6 +285,25 @@ namespace BE.Migrations
                     b.Navigation("HoaDon");
 
                     b.Navigation("MonAn");
+                });
+
+            modelBuilder.Entity("BE.Models.ChiTietPhieuNhap", b =>
+                {
+                    b.HasOne("BE.Models.NguyenLieu", "NguyenLieu")
+                        .WithMany("ChiTietPhieuNhaps")
+                        .HasForeignKey("MaNL")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BE.Models.PhieuNhap", "PhieuNhap")
+                        .WithMany("DanhSachChiTiet")
+                        .HasForeignKey("MaPN")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NguyenLieu");
+
+                    b.Navigation("PhieuNhap");
                 });
 
             modelBuilder.Entity("BE.Models.HoaDon", b =>
@@ -278,6 +362,16 @@ namespace BE.Migrations
             modelBuilder.Entity("BE.Models.MonAn", b =>
                 {
                     b.Navigation("ChiTietHoaDons");
+                });
+
+            modelBuilder.Entity("BE.Models.NguyenLieu", b =>
+                {
+                    b.Navigation("ChiTietPhieuNhaps");
+                });
+
+            modelBuilder.Entity("BE.Models.PhieuNhap", b =>
+                {
+                    b.Navigation("DanhSachChiTiet");
                 });
 
             modelBuilder.Entity("BE.Models.ThuNgan", b =>

@@ -10,7 +10,7 @@ namespace BE.Services
     {
         Task<List<MonAn>> LấyDanhSachMonAnAsync();
         Task<MonAn> ThêmMonAnAsync(MonAn monAn);
-        Task<bool> CậpNhatMonAnAsync(string id, MonAn monAn);
+        Task<bool> CậpNhatMonAnAsync(string id, MonAn monAn); 
         Task<bool> XóaMonAnAsync(string id);
     }
 

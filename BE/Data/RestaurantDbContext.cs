@@ -18,6 +18,9 @@ namespace BE.Data
         public DbSet<KhachHang> KhachHangs { get; set; }
         public DbSet<HoaDon> HoaDons { get; set; }
         public DbSet<ChiTietHoaDon> ChiTietHoaDons { get; set; }
+        public DbSet<NguyenLieu> NguyenLieus { get; set; }
+        public DbSet<PhieuNhap> PhieuNhaps { get; set; }
+        public DbSet<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
 
         // --- CẤU HÌNH NÂNG CAO BẰNG FLUENT API ---
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,7 +40,11 @@ namespace BE.Data
                 .HasOne(h => h.ThuNgan)
                 .WithMany(t => t.HoaDonsDaXuLy)
                 .HasForeignKey(h => h.ThuNganMaNV)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // 3. Cấu hình Khóa chính tổ hợp (Composite Key) cho bảng trung gian ChiTietPhieuNhap
+            modelBuilder.Entity<ChiTietPhieuNhap>()
+                .HasKey(c => new { c.MaPN, c.MaNL });
         }
     }
 }
