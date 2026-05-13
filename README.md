@@ -9,13 +9,13 @@ Follow these instructions to set up the project locally for development and test
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Babiboyy55/Lumiere-Stay.git
-cd Lumiere-Stay
+git clone https://github.com/hoangnam140205/PTTKPM25-26_N05_Nhom-1
+cd PTTKPM25-26_N05_Nhom-1
 ```
 
 ### 2. Backend Setup
 ```bash
-cd BE-Project
+cd BE
 # Open Lumiere.sln in Visual Studio or restore packages via CLI:
 dotnet restore
 
@@ -31,7 +31,7 @@ dotnet run
 ### 3. Frontend Setup
 Open a new terminal window:
 ```bash
-cd Frontend
+cd FE
 
 # Install dependencies
 npm install
