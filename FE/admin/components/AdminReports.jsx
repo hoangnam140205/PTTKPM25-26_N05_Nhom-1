@@ -22,11 +22,11 @@ export default function AdminReports() {
   const fetchDashboardData = async () => {
     try {
       setIsLoading(true);
-      
+
       // Gọi song song 2 API lấy Món ăn và Hóa đơn (Chỉnh sửa lại URL nếu BE của bạn lưu khác)
       const [monAnRes, hoaDonRes] = await Promise.all([
         axiosClient.get('/admin/MonAn').catch(() => []), // Dùng .catch để nếu BE chưa code xong API này cũng không bị crash web
-        axiosClient.get('/HoaDon').catch(() => []) 
+        axiosClient.get('/HoaDon').catch(() => [])
       ]);
 
       // Bóc tách dữ liệu (xử lý an toàn nếu API trả về null)
@@ -36,7 +36,7 @@ export default function AdminReports() {
       // Phân loại trạng thái (Tùy thuộc vào tên biến trong C# của bạn là TrangThai hay Status)
       const completed = orders.filter(o => o.trangThai === 'DaThanhToan' || o.status === 'completed');
       const pending = orders.filter(o => o.trangThai === 'ChuaThanhToan' || o.status === 'pending');
-      
+
       // Tính tổng doanh thu (Tùy thuộc vào tên biến TongTien trong C#)
       const revenue = completed.reduce((sum, order) => sum + (order.tongTien || order.total || 0), 0);
 
@@ -72,13 +72,24 @@ export default function AdminReports() {
 
       {/* Stats Grid */}
       <div className="grid-cards" style={{ marginBottom: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
-        
+
         <div className="glass-card" style={{ padding: '1.5rem', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
           <div className="flex-between" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>
               <p className="text-muted" style={{ color: '#4b5563', margin: '0 0 0.5rem 0' }}>Tổng Doanh Thu</p>
-              <p className="heading-2" style={{ margin: 0, fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>
-                ${stats.totalRevenue.toLocaleString()}
+              <p
+                className="heading-2"
+                style={{
+                  margin: 0,
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
+                  color: '#111827'
+                }}
+              >
+                {stats.totalRevenue.toLocaleString('vi-VN', {
+                  style: 'currency',
+                  currency: 'VND'
+                })}
               </p>
             </div>
             <div className="btn-icon" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '1rem', borderRadius: '50%' }}>
@@ -129,7 +140,7 @@ export default function AdminReports() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
         <div className="glass-panel" style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
           <h3 className="heading-3" style={{ marginTop: 0, marginBottom: '1.5rem', color: '#111827' }}>Hóa đơn gần đây</h3>
-          
+
           {recentOrders.length === 0 ? (
             <p style={{ color: '#4b5563', fontStyle: 'italic' }}>Chưa có hóa đơn nào trong hệ thống.</p>
           ) : (

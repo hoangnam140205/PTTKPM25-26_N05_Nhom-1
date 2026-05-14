@@ -13,6 +13,12 @@ namespace BE.Controllers
         public int SoLuongMoi { get; set; }
     }
 
+    // Tạo 1 Data Transfer Object (DTO) nhỏ để nhận dữ liệu từ Frontend cho tính năng Thanh toán
+    public class ThanhToanRequest
+    {
+        public string? MaKM { get; set; } // Khuyến mãi là tùy chọn
+    }
+
     [Authorize(Roles = "Admin,ThuNgan")]
     [Route("api/admin/[controller]")]
     [ApiController]
@@ -62,6 +68,30 @@ namespace BE.Controllers
             if (!result) return BadRequest("Lỗi khi đổi món. Vui lòng kiểm tra lại mã món mới.");
 
             return Ok(new { message = "Đổi món thành công, đã cập nhật tổng tiền." });
+        }
+
+        // API Thanh toán: PUT api/admin/hoadon/HD01/thanh-toan
+        [Authorize(Roles = "Admin,ThuNgan")] // Cho phép cả Thu ngân truy cập
+        [HttpPut("{maHD}/thanh-toan")]
+        public async Task<IActionResult> ThanhToan(string maHD, [FromBody] ThanhToanRequest request)
+        {
+            try
+            {
+                var hoaDonDaThanhToan = await _hoaDonService.ThanhToanAsync(maHD, request?.MaKM);
+                
+                if (hoaDonDaThanhToan == null) 
+                    return BadRequest("Không tìm thấy hóa đơn hoặc hóa đơn này đã được thanh toán.");
+
+                return Ok(new { 
+                    message = "Thanh toán thành công!", 
+                    data = hoaDonDaThanhToan 
+                });
+            }
+            catch (Exception ex)
+            {
+                // Bắt lỗi mã khuyến mãi sai/hết hạn ném ra từ Service
+                return BadRequest(ex.Message); 
+            }
         }
     }
 }

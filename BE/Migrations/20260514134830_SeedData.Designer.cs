@@ -4,6 +4,7 @@ using BE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BE.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    partial class RestaurantDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260514134830_SeedData")]
+    partial class SeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,7 +288,7 @@ namespace BE.Migrations
                     b.HasData(
                         new
                         {
-                            MaNL = "NL02",
+                            MaNL = "NL01",
                             DonGia = 0f,
                             DonViTinh = "Kg",
                             GiaTriTon = 0f,
@@ -294,7 +297,7 @@ namespace BE.Migrations
                         },
                         new
                         {
-                            MaNL = "NL03",
+                            MaNL = "NL02",
                             DonGia = 0f,
                             DonViTinh = "Kg",
                             GiaTriTon = 0f,
@@ -303,7 +306,7 @@ namespace BE.Migrations
                         },
                         new
                         {
-                            MaNL = "NL04",
+                            MaNL = "NL03",
                             DonGia = 0f,
                             DonViTinh = "Thùng",
                             GiaTriTon = 0f,

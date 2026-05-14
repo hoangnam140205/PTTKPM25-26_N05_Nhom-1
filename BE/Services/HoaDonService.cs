@@ -13,6 +13,7 @@ namespace BE.Services
         Task<HoaDon> LayThongTinAsync(string id);
         Task<bool> HuyMonAsync(string maHD, string maMon);
         Task<bool> DoiMonAsync(string maHD, string maMonCu, string maMonMoi, int soLuongMoi);
+        Task<HoaDon> ThanhToanAsync(string maHD, string? maKM);
     }
 
     public class HoaDonService : IHoaDonService
@@ -101,6 +102,58 @@ namespace BE.Services
 
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<HoaDon> ThanhToanAsync(string maHD, string? maKM)
+        {
+            // 1. Tìm hóa đơn, nạp kèm Chi Tiết Món và thông tin Bàn
+            var hoaDon = await _context.HoaDons
+                .Include(hd => hd.DanhSachChiTiet)
+                .Include(hd => hd.Ban) 
+                .FirstOrDefaultAsync(hd => hd.MaHD == maHD);
+
+            if (hoaDon == null || hoaDon.TrangThai == "DaThanhToan")
+                return null;
+
+            // 2. Tính toán lại tổng tiền gốc (phòng hờ dữ liệu bị sai lệch)
+            float tongTienGoc = hoaDon.DanhSachChiTiet.Sum(ct => ct.ThanhTien);
+            float soTienGiam = 0;
+
+            // 3. Áp dụng Khuyến Mãi (<<extend>>)
+            if (!string.IsNullOrWhiteSpace(maKM))
+            {
+                // Kiểm tra mã: Có tồn tại và Còn hạn hay không?
+                var khuyenMai = await _context.KhuyenMais
+                    .FirstOrDefaultAsync(km => km.MaKM == maKM.ToUpper() && km.HanSuDung > DateTime.Now);
+
+                if (khuyenMai != null)
+                {
+                    soTienGiam = tongTienGoc * (khuyenMai.PhanTramGiam / 100f);
+                    hoaDon.KhuyenMaiMaKM = khuyenMai.MaKM; // Lưu lại mã đã dùng
+                }
+                else
+                {
+                    throw new Exception("Mã khuyến mãi không hợp lệ hoặc đã hết hạn.");
+                }
+            }
+
+            // Chốt tổng tiền cuối cùng
+            hoaDon.TongTien = tongTienGoc - soTienGiam;
+            if (hoaDon.TongTien < 0) hoaDon.TongTien = 0;
+
+            // 4. Xử lý trạng thái
+            hoaDon.TrangThai = "DaThanhToan";
+
+            // 5. Giải phóng Bàn
+            if (hoaDon.Ban != null)
+            {
+                hoaDon.Ban.TrangThai = "Trong";
+            }
+
+            await _context.SaveChangesAsync();
+            
+            // Trả về hóa đơn để Frontend thực hiện <<include>> In Hóa Đơn
+            return hoaDon; 
         }
     }
 }
