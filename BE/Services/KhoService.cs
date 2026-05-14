@@ -53,6 +53,7 @@ namespace BE.Services
                 if (nguyenLieu != null)
                 {
                     nguyenLieu.SoLuongTon += ct.SoLuong;
+                    nguyenLieu.GiaTriTon += ct.ThanhTien;
                 }
             }
 

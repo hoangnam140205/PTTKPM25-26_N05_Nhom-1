@@ -41,6 +41,23 @@ namespace BE.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        // API Cập nhật thông tin bàn: PUT api/admin/ban/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] Ban banUpdate)
+        {
+            if (id != banUpdate.MaBan) 
+                return BadRequest("Mã bàn trên URL và trong dữ liệu không khớp.");
+
+            // GỌI HÀM VỚI 2 THAM SỐ: id và banUpdate
+            var result = await _banService.CapNhatAsync(id, banUpdate); 
+            
+            if (!result) 
+                return NotFound("Không tìm thấy bàn này để cập nhật.");
+
+            return Ok(new { message = "Cập nhật thông tin bàn thành công." });
+        }
+
+        [Authorize(Roles = "Admin")]
         // API Chuyển bàn: PUT api/admin/ban/chuyen/1/sang/2
         [HttpPut("chuyen/{maBanCu}/sang/{maBanMoi}")]
         public async Task<IActionResult> ChuyenBan(int maBanCu, int maBanMoi)

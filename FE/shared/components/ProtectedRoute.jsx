@@ -38,10 +38,19 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
             (role) => role.toLowerCase() === userRole?.toLowerCase()
         );
 
+        // 2. Nếu đi lạc (Sai quyền)
         if (!hasRequiredRole) {
-            alert("Bạn không có quyền truy cập khu vực này!");
-            return <Navigate to="/" replace />;
-        }
+            // ĐIỀU HƯỚNG THÔNG MINH (Âm thầm đẩy về đúng khu vực)
+            if (userRole?.toLowerCase() === 'admin') {
+                return <Navigate to="/admin/reports" replace />;
+            } else if (userRole?.toLowerCase() === 'staff' || userRole?.toLowerCase() === 'thungan') {
+                return <Navigate to="/staff/orders" replace />;
+            } else {
+                // Token rác hoặc lỗi
+                localStorage.removeItem('token');
+                return <Navigate to="/login" replace />;
+            }
+        }   
     }
 
     return children ? children : <Outlet />;

@@ -16,6 +16,8 @@ import AdminDashboard from './admin/pages/AdminDashboard';
 import AdminReports from './admin/components/AdminReports';
 import MenuManagement from './admin/components/MenuManagement';
 import TableManagement from './admin/components/TableManagement';
+import OrderManagement from './admin/components/OrderManagement';
+import InventoryManagement from './admin/components/InventoryManagement';
 // Tạm thời comment 2 file này lại cho đến khi bạn thực sự tạo file vật lý
 // import InventoryManagement from './admin/components/InventoryManagement';
 // import PromotionManagement from './admin/components/PromotionManagement';
@@ -64,9 +66,10 @@ function AppRoutes() {
         <Route path="reports" element={<AdminReports />} />
         <Route path="menu" element={<MenuManagement />} />
         <Route path="tables" element={<TableManagement />} />
+        <Route path="orders" element={<OrderManagement />} />
         
         {/* Sẽ mở ra khi bạn tạo xong 2 component này */}
-        {/* <Route path="inventory" element={<InventoryManagement />} /> */}
+        <Route path="inventory" element={<InventoryManagement />} />
         {/* <Route path="promotions" element={<PromotionManagement />} /> */}
       </Route>
     </Routes>

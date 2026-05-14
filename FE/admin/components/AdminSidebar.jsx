@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, Table, DollarSign, Package, Tag, LogOut } from 'lucide-react';
 import { useAuth } from '../../shared/context/AuthContext';
+import { Receipt } from 'lucide-react'; // Thêm Receipt vào danh sách import
 
 export default function AdminSidebar() {
   const location = useLocation();
@@ -18,6 +19,7 @@ export default function AdminSidebar() {
   const menuItems = [
     { path: '/admin/reports', icon: DollarSign, label: 'Báo Cáo (Reports)' },
     { path: '/admin/menu', icon: Menu, label: 'Thực Đơn (Menu)' },
+    { path: '/admin/orders', icon: Receipt, label: 'Hóa Đơn (Orders)' },
     { path: '/admin/tables', icon: Table, label: 'Sơ Đồ Bàn (Tables)' },
     // Mở rộng thêm 2 tính năng từ BE
     { path: '/admin/promotions', icon: Tag, label: 'Khuyến Mãi' },

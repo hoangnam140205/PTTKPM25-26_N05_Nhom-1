@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, Clock, DollarSign, CheckCircle2 } from 'lucide-react';
 import axiosClient from '../../api/axiosClient';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 export default function AdminReports() {
   // 1. Khởi tạo State với giá trị mặc định bằng 0 để tránh lỗi 'undefined'

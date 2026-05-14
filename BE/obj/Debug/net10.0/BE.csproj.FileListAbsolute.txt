@@ -9,7 +9,6 @@ D:\project\PTTKPM25-26_N05_Nhom-1\BE\bin\Debug\net10.0\BE.pdb
 D:\project\PTTKPM25-26_N05_Nhom-1\BE\bin\Debug\net10.0\Azure.Core.dll
 D:\project\PTTKPM25-26_N05_Nhom-1\BE\bin\Debug\net10.0\Azure.Identity.dll
 D:\project\PTTKPM25-26_N05_Nhom-1\BE\bin\Debug\net10.0\Humanizer.dll
-D:\project\PTTKPM25-26_N05_Nhom-1\BE\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
 D:\project\PTTKPM25-26_N05_Nhom-1\BE\bin\Debug\net10.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\project\PTTKPM25-26_N05_Nhom-1\BE\bin\Debug\net10.0\Microsoft.Bcl.Cryptography.dll
 D:\project\PTTKPM25-26_N05_Nhom-1\BE\bin\Debug\net10.0\Microsoft.CodeAnalysis.dll
@@ -322,3 +321,4 @@ E:\Hoang Phong\PTTKPM25-26_N05_Nhom-1\BE\obj\Debug\net10.0\BE.pdb
 E:\Hoang Phong\PTTKPM25-26_N05_Nhom-1\BE\obj\Debug\net10.0\BE.genruntimeconfig.cache
 E:\Hoang Phong\PTTKPM25-26_N05_Nhom-1\BE\obj\Debug\net10.0\ref\BE.dll
 E:\Hoang Phong\PTTKPM25-26_N05_Nhom-1\BE\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\project\PTTKPM25-26_N05_Nhom-1\BE\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

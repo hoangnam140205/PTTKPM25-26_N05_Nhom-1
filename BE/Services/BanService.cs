@@ -50,7 +50,11 @@ namespace BE.Services
         {
             var banCu = await _context.Bans.FindAsync(id);
             if (banCu == null) return false;
+            
+            // Cập nhật cả Trạng thái và Tên bàn mới
             banCu.TrangThai = ban.TrangThai;
+            banCu.TenBan = ban.TenBan; 
+            
             await _context.SaveChangesAsync();
             return true;
         }

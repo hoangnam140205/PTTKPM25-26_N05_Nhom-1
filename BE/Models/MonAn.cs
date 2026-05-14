@@ -13,7 +13,10 @@ namespace BE.Models
         public float GiaTien { get; set; }
         
         public string TrangThai { get; set; }
+
+        public string? HinhAnh { get; set; }
+
         // Quan hệ 1-Nhiều với ChiTietHoaDon
-        public ICollection<ChiTietHoaDon> ChiTietHoaDons { get; set; }
+        public virtual ICollection<ChiTietHoaDon>? ChiTietHoaDons { get; set; }
     }
 }
