@@ -23,10 +23,21 @@ import PromotionManagement from './admin/components/PromotionManagement';
 // import InventoryManagement from './admin/components/InventoryManagement';
 // import PromotionManagement from './admin/components/PromotionManagement';
 
+// --- STAFF COMPONENTS ---
+import StaffLayout from './staff/components/StaffLayout';
+import StaffOrders from './staff/pages/StaffOrders';
+import StaffTables from './staff/pages/StaffTables';
+
+// --- KITCHEN COMPONENTS ---
+import KitchenLayout from './kitchen/pages/KitchenLayout';
+import KitchenOrders from './kitchen/pages/KitchenOrders';
+import KitchenInventory from './kitchen/pages/KitchenInventory';
+
 // Tạm thời giữ lại Dummy Data cho Customer
 const initialMenu = [
-  { id: 1, name: 'Truffle Risotto', price: 28.5, category: 'Main Courses' },
-  { id: 2, name: 'Wagyu Beef Steak', price: 65.0, category: 'Main Courses' },
+  { id: 'M01', name: 'Bít tết sốt tiêu đen', price: 150000, category: 'Main Courses' },
+  { id: 'M02', name: 'Salad cá ngừ', price: 65000, category: 'Main Courses' },
+  { id: 'M03', name: 'Nước ép dưa hấu', price: 30000, category: 'Drinks' }
 ];
 const initialTables = [
   { id: 1, number: 'T1', capacity: 2, status: 'available' },
@@ -45,11 +56,9 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/admin/login" element={<Navigate to="/login" />} />
       
-      {/* --- CUSTOMER ROUTES --- */}
+      {/* --- CUSTOMER ROUTES (No Login Required) --- */}
       <Route path="/" element={
-        <ProtectedRoute allowedRoles={['customer']}>
-          <CustomerLayout cartItemCount={cart.length} />
-        </ProtectedRoute>
+        <CustomerLayout cartItemCount={cart.length} />
       }>
         <Route index element={<OrderSetup tables={tables} />} />
         <Route path="menu" element={<MenuPage menu={menu} addToCart={addToCart} />} />
@@ -72,6 +81,28 @@ function AppRoutes() {
         {/* Sẽ mở ra khi bạn tạo xong 2 component này */}
         <Route path="inventory" element={<InventoryManagement />} />
         <Route path="promotions" element={<PromotionManagement />} /> */
+      </Route>
+
+      {/* --- STAFF ROUTES --- */}
+      <Route path="/staff" element={
+        <ProtectedRoute allowedRoles={['Staff', 'ThuNgan']}> 
+          <StaffLayout />
+        </ProtectedRoute>
+      }>
+        <Route index element={<Navigate to="orders" />} />
+        <Route path="orders" element={<StaffOrders />} />
+        <Route path="tables" element={<StaffTables />} />
+      </Route>
+
+      {/* --- KITCHEN ROUTES --- */}
+      <Route path="/kitchen" element={
+        <ProtectedRoute allowedRoles={['Bep']}> 
+          <KitchenLayout />
+        </ProtectedRoute>
+      }>
+        <Route index element={<Navigate to="orders" />} />
+        <Route path="orders" element={<KitchenOrders />} />
+        <Route path="inventory" element={<KitchenInventory />} />
       </Route>
     </Routes>
   );

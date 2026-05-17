@@ -35,7 +35,7 @@ namespace BE.Controllers
         }
 
         // PUT: api/admin/MonAn/{id} (Sửa thông tin món)
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Bep")]
         [HttpPut("{id}")]
         public async Task<IActionResult> CapNhatMonAn(string id, [FromBody] MonAn monAn)
         {

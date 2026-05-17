@@ -14,6 +14,7 @@ namespace BE.Services
         Task<bool> HuyMonAsync(string maHD, string maMon);
         Task<bool> DoiMonAsync(string maHD, string maMonCu, string maMonMoi, int soLuongMoi);
         Task<HoaDon> ThanhToanAsync(string maHD, string? maKM);
+        Task<HoaDon> CapNhatTrangThaiAsync(string maHD, string trangThai);
     }
 
     public class HoaDonService : IHoaDonService
@@ -27,7 +28,10 @@ namespace BE.Services
 
         public async Task<List<HoaDon>> LayDanhSachAsync()
         {
-            return await _context.HoaDons.ToListAsync();
+            return await _context.HoaDons
+                                 .Include(hd => hd.DanhSachChiTiet)
+                                    .ThenInclude(ct => ct.MonAn)
+                                 .ToListAsync();
         }
 
         public async Task<HoaDon> ThemAsync(HoaDon hoaDon)
@@ -41,6 +45,7 @@ namespace BE.Services
         {
             return await _context.HoaDons
                                  .Include(hd => hd.DanhSachChiTiet) // Lấy luôn cả danh sách món ăn bên trong
+                                    .ThenInclude(ct => ct.MonAn)
                                  .FirstOrDefaultAsync(hd => hd.MaHD == id);
         }
 
@@ -109,6 +114,7 @@ namespace BE.Services
             // 1. Tìm hóa đơn, nạp kèm Chi Tiết Món và thông tin Bàn
             var hoaDon = await _context.HoaDons
                 .Include(hd => hd.DanhSachChiTiet)
+                    .ThenInclude(ct => ct.MonAn)
                 .Include(hd => hd.Ban) 
                 .FirstOrDefaultAsync(hd => hd.MaHD == maHD);
 
@@ -154,6 +160,15 @@ namespace BE.Services
             
             // Trả về hóa đơn để Frontend thực hiện <<include>> In Hóa Đơn
             return hoaDon; 
+        }
+        public async Task<HoaDon> CapNhatTrangThaiAsync(string maHD, string trangThai)
+        {
+            var hoaDon = await _context.HoaDons.FindAsync(maHD);
+            if (hoaDon == null) return null;
+
+            hoaDon.TrangThai = trangThai;
+            await _context.SaveChangesAsync();
+            return hoaDon;
         }
     }
 }

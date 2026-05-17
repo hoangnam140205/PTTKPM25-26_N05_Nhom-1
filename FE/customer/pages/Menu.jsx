@@ -1,8 +1,42 @@
-import React from 'react';
-import { Plus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Utensils } from 'lucide-react';
+import axiosClient from '../../api/axiosClient';
 
-export default function Menu({ menu, addToCart }) {
-  const categories = [...new Set(menu.map(item => item.category))];
+export default function Menu({ addToCart }) {
+  const [menuItems, setMenuItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const data = await axiosClient.get('/admin/MonAn');
+        if (Array.isArray(data)) {
+          // Chỉ hiển thị các món đang bán (Có thể là 'Còn hàng' hoặc 'DangBan' tùy theo dữ liệu mẫu)
+          const availableItems = data.filter(item => item.trangThai === 'Còn hàng' || item.trangThai === 'DangBan');
+          setMenuItems(availableItems.map(item => ({
+            id: item.maMon,
+            name: item.tenMon,
+            price: item.giaTien || 0,
+            category: "Thực Đơn Chính",
+            image: item.hinhAnh
+          })));
+        }
+      } catch (error) {
+        console.error("Lỗi lấy thực đơn:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchMenu();
+  }, []);
+
+  const categories = [...new Set(menuItems.map(item => item.category))];
+
+  if (isLoading) {
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+      <h2 style={{ color: 'var(--primary-color)' }}>Đang tải thực đơn...</h2>
+    </div>;
+  }
 
   return (
     <div className="container animate-fade-in" style={{ padding: '2rem' }}>
@@ -18,16 +52,22 @@ export default function Menu({ menu, addToCart }) {
               {category}
             </h2>
             <div className="grid-cards">
-              {menu.filter(item => item.category === category).map(item => (
+              {menuItems.filter(item => item.category === category).map(item => (
                 <div key={item.id} className="glass-card" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                   <div style={{ height: '200px', width: '100%', overflow: 'hidden' }}>
-                    <img 
-                      src={item.image} 
-                      alt={item.name} 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
-                      onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
-                      onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-                    />
+                    {item.image ? (
+                      <img 
+                        src={item.image} 
+                        alt={item.name} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
+                        onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                      />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Utensils size={60} color="#d97706" opacity={0.5} />
+                      </div>
+                    )}
                   </div>
                   <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
                     <div className="flex-between" style={{ alignItems: 'flex-start', marginBottom: '1rem' }}>

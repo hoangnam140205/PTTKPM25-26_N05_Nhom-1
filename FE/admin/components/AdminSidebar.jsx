@@ -27,7 +27,7 @@ export default function AdminSidebar() {
   ];
 
   return (
-    <aside className="glass-panel" style={{ width: '280px', margin: '1rem', display: 'flex', flexDirection: 'column', borderRadius: '24px' }}>
+    <aside className="glass-panel" style={{ width: '280px', margin: '1rem', display: 'flex', flexDirection: 'column', borderRadius: '24px', height: 'calc(100vh - 2rem)' }}>
       <div style={{ padding: '2rem', borderBottom: '1px solid var(--border-color)' }}>
         <h2 className="heading-2" style={{ margin: 0, background: 'linear-gradient(135deg, var(--primary-color), #fcd34d)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           Symphony

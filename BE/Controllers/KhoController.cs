@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BE.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Bep")]
     [Route("api/admin/[controller]")]
     [ApiController]
     public class KhoController : ControllerBase
@@ -32,6 +32,22 @@ namespace BE.Controllers
         {
             var created = await _khoService.ThemNguyenLieuMoiAsync(nl);
             return Ok(created);
+        }
+
+        [HttpPut("nguyen-lieu/{id}")]
+        public async Task<IActionResult> CapNhatNguyenLieu(string id, [FromBody] NguyenLieu nl)
+        {
+            var updated = await _khoService.CapNhatNguyenLieuAsync(id, nl);
+            if (updated == null) return NotFound("Không tìm thấy nguyên liệu này!");
+            return Ok(updated);
+        }
+
+        [HttpDelete("nguyen-lieu/{id}")]
+        public async Task<IActionResult> XoaNguyenLieu(string id)
+        {
+            var success = await _khoService.XoaNguyenLieuAsync(id);
+            if (!success) return BadRequest("Không thể xóa nguyên liệu này. Có thể nguyên liệu đã được dùng trong Phiếu Nhập!");
+            return Ok(new { Message = "Xóa nguyên liệu thành công." });
         }
 
         // Lưu Phiếu Nhập Kho (Tự động cộng dồn số lượng tồn)
