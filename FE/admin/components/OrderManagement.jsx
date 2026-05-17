@@ -122,11 +122,15 @@ export default function OrderManagement() {
                   <span style={{ 
                     display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
                     padding: '0.25rem 0.75rem', borderRadius: '99px', fontSize: '0.875rem', fontWeight: 'bold',
-                    backgroundColor: order.trangThai === 'DaThanhToan' ? '#d1fae5' : '#fef3c7',
-                    color: order.trangThai === 'DaThanhToan' ? '#059669' : '#d97706'
+                    backgroundColor: order.trangThai === 'DaThanhToan' ? '#d1fae5' : order.trangThai === 'DaHoanThanh' ? '#d1fae5' : order.trangThai === 'DangThucHien' ? '#fef3c7' : '#eff6ff',
+                    color: order.trangThai === 'DaThanhToan' ? '#059669' : order.trangThai === 'DaHoanThanh' ? '#059669' : order.trangThai === 'DangThucHien' ? '#d97706' : '#3b82f6'
                   }}>
-                    {order.trangThai === 'DaThanhToan' ? <CheckCircle size={14} /> : <Clock size={14} />}
-                    {order.trangThai === 'DaThanhToan' ? 'Đã Thanh Toán' : 'Chưa Thanh Toán'}
+                    {order.trangThai === 'DaThanhToan' || order.trangThai === 'DaHoanThanh' ? <CheckCircle size={14} /> : <Clock size={14} />}
+                    {order.trangThai === 'DaThanhToan' ? 'Đã Thanh Toán' : 
+                     order.trangThai === 'DaHoanThanh' ? 'Đã Hoàn Thành' :
+                     order.trangThai === 'DangThucHien' ? 'Đang Thực Hiện' :
+                     order.trangThai === 'TiepNhan' ? 'Tiếp Nhận' :
+                     'Chưa Thanh Toán'}
                   </span>
                 </td>
                 <td style={{ padding: '1rem', textAlign: 'center' }}>
@@ -165,7 +169,13 @@ export default function OrderManagement() {
               <>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem', backgroundColor: '#f9fafb', padding: '1rem', borderRadius: '8px' }}>
                   <div><strong style={{ color: '#4b5563' }}>Bàn:</strong> {selectedOrder.maBan || 'Không'}</div>
-                  <div><strong style={{ color: '#4b5563' }}>Trạng thái:</strong> {selectedOrder.trangThai === 'DaThanhToan' ? 'Đã thanh toán' : 'Chưa thanh toán'}</div>
+                  <div><strong style={{ color: '#4b5563' }}>Trạng thái:</strong> {
+                    selectedOrder.trangThai === 'DaThanhToan' ? 'Đã thanh toán' : 
+                    selectedOrder.trangThai === 'DaHoanThanh' ? 'Đã hoàn thành' :
+                    selectedOrder.trangThai === 'DangThucHien' ? 'Đang thực hiện' :
+                    selectedOrder.trangThai === 'TiepNhan' ? 'Tiếp nhận' :
+                    'Chưa thanh toán'
+                  }</div>
                   <div><strong style={{ color: '#4b5563' }}>Thu ngân:</strong> {selectedOrder.thuNganMaNV || 'N/A'}</div>
                   <div><strong style={{ color: '#4b5563' }}>Tổng tiền:</strong> <span style={{ color: '#d97706', fontWeight: 'bold', fontSize: '1.25rem' }}>${selectedOrder.tongTien?.toLocaleString()}</span></div>
                 </div>

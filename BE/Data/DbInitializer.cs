@@ -1,5 +1,6 @@
 using BE.Models;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace BE.Data
 {
@@ -10,22 +11,27 @@ namespace BE.Data
             // Đảm bảo database đã được tạo
             context.Database.EnsureCreated();
 
-            // Kiểm tra xem trong bảng NhanViens đã có tài khoản nào chưa
-            if (context.NhanViens.Any())
+            // Kiểm tra và tạo tài khoản Admin
+            if (!context.NhanViens.Any(nv => nv.MaNV == "ADMIN001"))
             {
-                return; // Nếu đã có dữ liệu rồi thì thoát, không seed nữa
+                var admin = new Admin { MaNV = "ADMIN001", HoTen = "Administrator", MatKhau = "123456" };
+                context.NhanViens.Add(admin);
             }
 
-            // Nếu chưa có, tạo tài khoản Admin mặc định
-            // LƯU Ý: Khởi tạo bằng đối tượng 'Admin' để EF Core tự động hiểu và lưu cột Discriminator = 'Admin'
-            var admin = new Admin
+            // Kiểm tra và tạo tài khoản Nhân Viên (ThuNgan)
+            if (!context.NhanViens.Any(nv => nv.MaNV == "NV001"))
             {
-                MaNV = "AD01",
-                HoTen = "Hoàng Phong",
-                MatKhau = "123456"
-            };
+                var staff = new ThuNgan { MaNV = "NV001", HoTen = "Nhân Viên Test", MatKhau = "123456", HoaDonsDaXuLy = new List<HoaDon>() };
+                context.NhanViens.Add(staff);
+            }
 
-            context.NhanViens.Add(admin);
+            // Kiểm tra và tạo tài khoản Bếp
+            if (!context.NhanViens.Any(nv => nv.MaNV == "BEP001"))
+            {
+                var kitchen = new Bep { MaNV = "BEP001", HoTen = "Nhân Viên Bếp", MatKhau = "123456" };
+                context.NhanViens.Add(kitchen);
+            }
+
             context.SaveChanges();
         }
     }

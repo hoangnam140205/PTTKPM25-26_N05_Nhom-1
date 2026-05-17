@@ -16,6 +16,7 @@ namespace BE.Data
         public DbSet<NhanVien> NhanViens { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<ThuNgan> ThuNgans { get; set; }
+        public DbSet<Bep> Beps { get; set; }
         public DbSet<KhachHang> KhachHangs { get; set; }
         public DbSet<HoaDon> HoaDons { get; set; }
         public DbSet<ChiTietHoaDon> ChiTietHoaDons { get; set; }
@@ -56,14 +57,15 @@ namespace BE.Data
                 new Ban { MaBan = 1, TenBan = "Bàn số 1", TrangThai = "Trong" },
                 new Ban { MaBan = 2, TenBan = "Bàn số 2", TrangThai = "Trong" },
                 new Ban { MaBan = 3, TenBan = "Bàn số 3", TrangThai = "Trong" },
-                new Ban { MaBan = 4, TenBan = "Bàn VIP 1", TrangThai = "Trong" }
+                new Ban { MaBan = 4, TenBan = "Bàn số 4", TrangThai = "Trong" },
+                new Ban { MaBan = 5, TenBan = "Bàn số 5", TrangThai = "Trong" }               
             );
 
             // 2. Dữ liệu mẫu Kho Nguyên Liệu
             modelBuilder.Entity<NguyenLieu>().HasData(
-                new NguyenLieu { MaNL = "NL02", TenNL = "Thịt Bò Úc", DonViTinh = "Kg", SoLuongTon = 0, GiaTriTon = 0 },
-                new NguyenLieu { MaNL = "NL03", TenNL = "Cà chua Đà Lạt", DonViTinh = "Kg", SoLuongTon = 0, GiaTriTon = 0 },
-                new NguyenLieu { MaNL = "NL04", TenNL = "Bia Heineken", DonViTinh = "Thùng", SoLuongTon = 0, GiaTriTon = 0 }
+                new NguyenLieu { MaNL = "NL01", TenNL = "Thịt Bò Úc", DonViTinh = "Kg", SoLuongTon = 0, GiaTriTon = 0 },
+                new NguyenLieu { MaNL = "NL02", TenNL = "Cà chua Đà Lạt", DonViTinh = "Kg", SoLuongTon = 0, GiaTriTon = 0 },
+                new NguyenLieu { MaNL = "NL03", TenNL = "Bia Heineken", DonViTinh = "Thùng", SoLuongTon = 0, GiaTriTon = 0 }
             );
 
             // 3. Dữ liệu mẫu Khuyến Mãi

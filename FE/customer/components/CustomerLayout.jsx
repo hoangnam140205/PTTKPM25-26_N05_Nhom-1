@@ -1,9 +1,16 @@
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, LogIn, LogOut } from 'lucide-react';
+import { useAuth } from '../../shared/context/AuthContext';
 
 export default function CustomerLayout({ cartItemCount }) {
   const location = useLocation();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    window.location.href = '/';
+  };
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -20,16 +27,39 @@ export default function CustomerLayout({ cartItemCount }) {
             <Link to="/" style={{ color: location.pathname === '/' ? 'var(--primary-color)' : 'var(--text-main)', fontWeight: 600, transition: 'color 0.2s' }}>Home</Link>
             <Link to="/menu" style={{ color: location.pathname === '/menu' ? 'var(--primary-color)' : 'var(--text-main)', fontWeight: 600, transition: 'color 0.2s' }}>Menu</Link>
             <div style={{ width: '1px', height: '24px', background: 'var(--border-color)', margin: '0 0.5rem' }}></div>
-            <button 
-              onClick={() => {
-                // Clear local storage and logout
-                localStorage.removeItem('customerOrderInfo');
-                window.location.href = '/login';
-              }} 
-              className="btn-icon" style={{ color: 'var(--text-muted)' }} title="Logout"
-            >
-              Logout
-            </button>
+            
+            {/* Login/Logout Button */}
+            {user ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
+                  {user.name} ({user.role})
+                </span>
+                <button 
+                  onClick={handleLogout}
+                  className="btn-icon" 
+                  style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.5rem' }} 
+                  title="Logout"
+                >
+                  <LogOut size={18} /> Logout
+                </button>
+              </div>
+            ) : (
+              <Link 
+                to="/login" 
+                className="btn-icon" 
+                style={{ 
+                  color: 'var(--primary-color)', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '0.5rem',
+                  fontWeight: 600
+                }} 
+                title="Login"
+              >
+                <LogIn size={18} /> Login
+              </Link>
+            )}
+            
             <Link to="/checkout" className="btn-icon" style={{ position: 'relative', marginLeft: '1rem' }}>
               <ShoppingCart size={20} />
               {cartItemCount > 0 && (

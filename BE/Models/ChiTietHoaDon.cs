@@ -19,6 +19,6 @@ namespace BE.Models
         
         public float ThanhTien { get; set; }
         
-        public string GhiChu { get; set; } // Ví dụ: "Ít cay, không đá..."
+        public string? GhiChu { get; set; } // Ví dụ: "Ít cay, không đá..."
     }
 }

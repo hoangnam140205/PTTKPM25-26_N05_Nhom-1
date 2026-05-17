@@ -1,43 +1,114 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle2, Banknote, CreditCard, Landmark } from 'lucide-react';
+import { CheckCircle2, Banknote, CreditCard, Landmark, Loader2 } from 'lucide-react';
+import axiosClient from '../../api/axiosClient';
 
 export default function Checkout({ cart, setCart, onPlaceOrder }) {
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState(''); // 'Cash', 'Transfer', 'Visa'
   
+  const [placedOrder, setPlacedOrder] = useState(null);
+  const [orderStatus, setOrderStatus] = useState('');
+  const [isPlacing, setIsPlacing] = useState(false);
+
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cart.length === 0) return;
     if (!paymentMethod) {
       alert('Vui lòng chọn phương thức thanh toán!');
       return;
     }
     
-    // Create order
-    const newOrder = {
-      id: Date.now(),
-      status: 'pending',
-      total: total,
-      paymentMethod: paymentMethod,
-      date: new Date().toISOString().split('T')[0],
-      items: cart.reduce((acc, item) => {
-        const existing = acc.find(i => i.id === item.id);
-        if (existing) {
-          existing.quantity += 1;
-        } else {
-          acc.push({ ...item, quantity: 1 });
-        }
-        return acc;
-      }, [])
-    };
+    setIsPlacing(true);
+    try {
+      const newOrder = {
+        MaBan: null,
+        TongTien: total,
+        DanhSachChiTiet: cart.reduce((acc, item) => {
+          const existing = acc.find(i => i.MaMon === item.id.toString());
+          if (existing) {
+            existing.SoLuong += 1;
+            existing.ThanhTien = existing.SoLuong * item.price;
+          } else {
+            acc.push({ MaMon: item.id.toString(), SoLuong: 1, ThanhTien: item.price });
+          }
+          return acc;
+        }, [])
+      };
 
-    onPlaceOrder(newOrder);
-    setCart([]); // clear cart
-    alert(`Order placed successfully! Paid via ${paymentMethod}. The kitchen is preparing your meal.`);
-    navigate('/');
+      const response = await axiosClient.post('/admin/HoaDon', newOrder);
+      
+      // Clear cart
+      setCart([]);
+      
+      // Set placed order for tracking
+      setPlacedOrder(response.data);
+      setOrderStatus(response.data.trangThai || 'TiepNhan');
+    } catch (error) {
+      alert('Lỗi đặt hàng: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setIsPlacing(false);
+    }
   };
+
+  useEffect(() => {
+    if (!placedOrder) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const data = await axiosClient.get(`/admin/HoaDon/${placedOrder.maHD}`);
+        setOrderStatus(data.trangThai);
+      } catch (error) {
+        console.error("Lỗi cập nhật trạng thái đơn hàng:", error);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [placedOrder]);
+
+  const getStatusDisplay = (status) => {
+    switch(status) {
+      case 'TiepNhan': return { text: 'Tiếp nhận', color: '#3b82f6' };
+      case 'DangThucHien': return { text: 'Đang thực hiện', color: '#f59e0b' };
+      case 'DaHoanThanh': return { text: 'Đã hoàn thành', color: '#10b981' };
+      default: return { text: status || 'Đang xử lý', color: '#6b7280' };
+    }
+  };
+
+  if (placedOrder) {
+    const statusInfo = getStatusDisplay(orderStatus);
+    return (
+      <div className="container animate-fade-in" style={{ padding: '2rem', maxWidth: '800px', textAlign: 'center' }}>
+        <h1 className="heading-1" style={{ fontSize: '3rem', marginBottom: '1rem' }}>Theo dõi đơn hàng</h1>
+        <p className="text-muted" style={{ fontSize: '1.2rem', marginBottom: '2rem' }}>Đơn hàng của bạn đã được gửi đến bếp!</p>
+        
+        <div className="glass-panel" style={{ padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <CheckCircle2 size={64} color="var(--success-color)" style={{ marginBottom: '1.5rem' }} />
+          <h2 style={{ fontSize: '1.5rem', margin: '0 0 1rem 0' }}>Mã Hóa Đơn: #{placedOrder.maHD}</h2>
+          
+          <div style={{ 
+            marginTop: '1.5rem', 
+            padding: '1.5rem', 
+            borderRadius: '12px', 
+            backgroundColor: 'rgba(255,255,255,0.05)',
+            border: `2px solid ${statusInfo.color}`,
+            width: '100%',
+            maxWidth: '400px'
+          }}>
+            <p style={{ margin: '0 0 0.5rem 0', color: 'var(--text-muted)' }}>Trạng thái hiện tại</p>
+            <p style={{ margin: 0, fontSize: '2rem', fontWeight: 800, color: statusInfo.color }}>
+              {statusInfo.text}
+            </p>
+          </div>
+
+          <button onClick={() => navigate('/')} className="btn-secondary" style={{ marginTop: '3rem' }}>
+            Quay về trang chủ
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container animate-fade-in" style={{ padding: '2rem', maxWidth: '800px' }}>
@@ -129,16 +200,17 @@ export default function Checkout({ cart, setCart, onPlaceOrder }) {
 
             <button 
               onClick={handleCheckout} 
-              disabled={!paymentMethod}
+              disabled={!paymentMethod || isPlacing}
               className="btn-primary" 
               style={{ 
                 width: '100%', fontSize: '1.25rem', padding: '1rem', 
                 display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem',
                 marginTop: '2rem',
-                opacity: !paymentMethod ? 0.5 : 1
+                opacity: (!paymentMethod || isPlacing) ? 0.5 : 1
               }}
             >
-              <CheckCircle2 size={24} /> Pay & Place Order
+              {isPlacing ? <Loader2 className="animate-spin" size={24} /> : <CheckCircle2 size={24} />} 
+              {isPlacing ? 'Đang xử lý...' : 'Pay & Place Order'}
             </button>
           </div>
         </div>

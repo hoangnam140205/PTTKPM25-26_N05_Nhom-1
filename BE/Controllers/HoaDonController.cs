@@ -3,7 +3,7 @@ using BE.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-
+using System.Linq;
 namespace BE.Controllers
 {
     // Tạo 1 Data Transfer Object (DTO) nhỏ để nhận dữ liệu từ Frontend cho tính năng Đổi món
@@ -19,7 +19,26 @@ namespace BE.Controllers
         public string? MaKM { get; set; } // Khuyến mãi là tùy chọn
     }
 
-    [Authorize(Roles = "Admin,ThuNgan")]
+    public class CapNhatTrangThaiRequest
+    {
+        public string TrangThai { get; set; }
+    }
+
+    public class TaoChiTietHoaDonRequest
+    {
+        public string MaMon { get; set; }
+        public int SoLuong { get; set; }
+        public float ThanhTien { get; set; }
+    }
+
+    public class TaoHoaDonRequest
+    {
+        public int? MaBan { get; set; }
+        public float TongTien { get; set; }
+        public List<TaoChiTietHoaDonRequest> DanhSachChiTiet { get; set; }
+    }
+
+    [Authorize(Roles = "Admin,ThuNgan,Bep")]
     [Route("api/admin/[controller]")]
     [ApiController]
     public class HoaDonController : ControllerBase
@@ -44,6 +63,36 @@ namespace BE.Controllers
             var hoaDon = await _hoaDonService.LayThongTinAsync(id);
             if (hoaDon == null) return NotFound("Không tìm thấy hóa đơn này.");
             return Ok(hoaDon);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> TaoHoaDon([FromBody] TaoHoaDonRequest request)
+        {
+            var hoaDon = new HoaDon
+            {
+                MaHD = "HD" + DateTime.Now.Ticks.ToString().Substring(8, 8), // Generate short random ID
+                NgayTao = DateTime.Now,
+                MaBan = request.MaBan,
+                TongTien = request.TongTien,
+                TrangThai = "TiepNhan", // Trạng thái bắt đầu: Tiếp nhận
+                DanhSachChiTiet = request.DanhSachChiTiet?.Select(ct => new ChiTietHoaDon
+                {
+                    MaMon = ct.MaMon,
+                    SoLuong = ct.SoLuong,
+                    ThanhTien = ct.ThanhTien
+                }).ToList() ?? new List<ChiTietHoaDon>()
+            };
+
+            var result = await _hoaDonService.ThemAsync(hoaDon);
+            return Ok(new { 
+                message = "Đặt hàng thành công", 
+                data = new {
+                    maHD = result.MaHD,
+                    trangThai = result.TrangThai,
+                    tongTien = result.TongTien
+                }
+            });
         }
 
         // --- CÁC API NGHIỆP VỤ PHỨC TẠP ---
@@ -92,6 +141,17 @@ namespace BE.Controllers
                 // Bắt lỗi mã khuyến mãi sai/hết hạn ném ra từ Service
                 return BadRequest(ex.Message); 
             }
+        }
+
+        // API Đổi trạng thái: PUT api/admin/hoadon/HD01/trang-thai
+        [Authorize(Roles = "Admin,Bep")] // Bếp hoặc Admin
+        [HttpPut("{maHD}/trang-thai")]
+        public async Task<IActionResult> CapNhatTrangThai(string maHD, [FromBody] CapNhatTrangThaiRequest request)
+        {
+            var result = await _hoaDonService.CapNhatTrangThaiAsync(maHD, request.TrangThai);
+            if (result == null) return NotFound("Không tìm thấy hóa đơn này.");
+
+            return Ok(new { message = "Cập nhật trạng thái thành công.", data = result });
         }
     }
 }
