@@ -44,7 +44,7 @@ export default function StaffOrders() {
   const handleCheckout = async (maHD) => {
     if (window.confirm('Xác nhận thanh toán và in hóa đơn?')) {
       try {
-        await axiosClient.put(`/admin/HoaDon/${maHD}/thanhtoan`);
+        await axiosClient.put(`/admin/HoaDon/${maHD}/thanh-toan`, {});
         alert("Thanh toán thành công! Đang in hóa đơn...");
         viewOrderDetails(maHD);
         fetchOrders();
