@@ -42,9 +42,27 @@ export default function Checkout({ cart, setCart, onPlaceOrder }) {
       // Clear cart
       setCart([]);
       
+      const orderData = response.data;
       // Set placed order for tracking
-      setPlacedOrder(response.data);
-      setOrderStatus(response.data.trangThai || 'TiepNhan');
+      setPlacedOrder(orderData);
+      setOrderStatus(orderData.trangThai || 'TiepNhan');
+
+      // Save to recentOrders in localStorage
+      if (orderData && orderData.maHD) {
+        try {
+          let list = [];
+          const saved = localStorage.getItem('recentOrders');
+          if (saved) {
+            list = JSON.parse(saved);
+          }
+          list = list.filter(item => item !== orderData.maHD);
+          list.unshift(orderData.maHD);
+          list = list.slice(0, 5);
+          localStorage.setItem('recentOrders', JSON.stringify(list));
+        } catch (e) {
+          console.error("Lỗi lưu recentOrders vào localStorage", e);
+        }
+      }
     } catch (error) {
       alert('Lỗi đặt hàng: ' + (error.response?.data?.message || error.message));
     } finally {
@@ -102,9 +120,14 @@ export default function Checkout({ cart, setCart, onPlaceOrder }) {
             </p>
           </div>
 
-          <button onClick={() => navigate('/')} className="btn-secondary" style={{ marginTop: '3rem' }}>
-            Quay về trang chủ
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '3rem' }}>
+            <button onClick={() => navigate(`/track-order?id=${placedOrder.maHD}`)} className="btn-primary">
+              Theo dõi chi tiết
+            </button>
+            <button onClick={() => navigate('/')} className="btn-secondary">
+              Quay về trang chủ
+            </button>
+          </div>
         </div>
       </div>
     );

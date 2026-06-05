@@ -26,6 +26,7 @@ export default function CustomerLayout({ cartItemCount }) {
           <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
             <Link to="/" style={{ color: location.pathname === '/' ? 'var(--primary-color)' : 'var(--text-main)', fontWeight: 600, transition: 'color 0.2s' }}>Home</Link>
             <Link to="/menu" style={{ color: location.pathname === '/menu' ? 'var(--primary-color)' : 'var(--text-main)', fontWeight: 600, transition: 'color 0.2s' }}>Menu</Link>
+            <Link to="/track-order" style={{ color: location.pathname === '/track-order' ? 'var(--primary-color)' : 'var(--text-main)', fontWeight: 600, transition: 'color 0.2s' }}>Tra cứu đơn</Link>
             <div style={{ width: '1px', height: '24px', background: 'var(--border-color)', margin: '0 0.5rem' }}></div>
             
             {/* Login/Logout Button */}
