@@ -57,6 +57,7 @@ namespace BE.Controllers
             return Ok(hoaDons);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
