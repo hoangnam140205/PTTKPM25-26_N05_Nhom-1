@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, Edit2, Trash2, CheckCircle, Clock, Receipt, RefreshCcw } from 'lucide-react';
+import { Eye, CheckCircle, Clock, Receipt } from 'lucide-react';
 import axiosClient from '../../api/axiosClient';
 
 export default function StaffOrders() {
@@ -10,6 +10,9 @@ export default function StaffOrders() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  
+  // 1. THÊM STATE ĐỂ LƯU MÃ KHUYẾN MÃI MÀ THU NGÂN NHẬP
+  const [maKhuyenMai, setMaKhuyenMai] = useState('');
 
   useEffect(() => {
     fetchOrders();
@@ -31,6 +34,8 @@ export default function StaffOrders() {
     try {
       setDetailLoading(true);
       setIsDetailModalOpen(true);
+      // Reset lại mã khuyến mãi mỗi khi mở 1 đơn mới để tránh lưu nhầm đơn cũ
+      setMaKhuyenMai(''); 
       const data = await axiosClient.get(`/admin/HoaDon/${maHD}`);
       setSelectedOrder(data);
     } catch (error) {
@@ -44,12 +49,17 @@ export default function StaffOrders() {
   const handleCheckout = async (maHD) => {
     if (window.confirm('Xác nhận thanh toán và in hóa đơn?')) {
       try {
-        await axiosClient.put(`/admin/HoaDon/${maHD}/thanh-toan`, {});
+        // 2. GỬI MÃ KHUYẾN MÃI XUỐNG BACKEND
+        const payload = {
+          maKM: maKhuyenMai.trim() || null
+        };
+
+        await axiosClient.put(`/admin/HoaDon/${maHD}/thanh-toan`, payload);
         alert("Thanh toán thành công! Đang in hóa đơn...");
         viewOrderDetails(maHD);
         fetchOrders();
       } catch (error) {
-        alert("Lỗi: " + (error.response?.data?.message || "Không thể thanh toán hóa đơn này."));
+        alert("Lỗi: " + (error.response?.data || error.response?.data?.message || "Không thể thanh toán hóa đơn này."));
       }
     }
   };
@@ -86,7 +96,7 @@ export default function StaffOrders() {
                   {order.maBan ? `Bàn ${order.maBan}` : 'Mang đi'}
                 </td>
                 <td style={{ padding: '1rem', fontWeight: 'bold', color: '#d97706' }}>
-                  ${order.tongTien?.toLocaleString()}
+                  {order.tongTien?.toLocaleString('vi-VN')} VNĐ
                 </td>
                 <td style={{ padding: '1rem' }}>
                   <span style={{
@@ -136,8 +146,8 @@ export default function StaffOrders() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem', backgroundColor: '#f9fafb', padding: '1rem', borderRadius: '8px' }}>
                   <div><strong style={{ color: '#4b5563' }}>Bàn:</strong> {selectedOrder.maBan || 'Không'}</div>
                   <div><strong style={{ color: '#4b5563' }}>Trạng thái:</strong> {selectedOrder.trangThai === 'DaThanhToan' ? 'Đã thanh toán' : 'Chưa thanh toán'}</div>
-                  <div><strong style={{ color: '#4b5563' }}>Thu ngân:</strong> {selectedOrder.thuNganMaNV || 'N/A'}</div>
-                  <div><strong style={{ color: '#4b5563' }}>Tổng tiền:</strong> <span style={{ color: '#d97706', fontWeight: 'bold', fontSize: '1.25rem' }}>${selectedOrder.tongTien?.toLocaleString()}</span></div>
+                  <div><strong style={{ color: '#4b5563' }}>Mã Khuyến Mãi (Nếu có):</strong> {selectedOrder.khuyenMaiMaKM || 'Không áp dụng'}</div>
+                  <div><strong style={{ color: '#4b5563' }}>Tổng tiền:</strong> <span style={{ color: '#d97706', fontWeight: 'bold', fontSize: '1.25rem' }}>{selectedOrder.tongTien?.toLocaleString('vi-VN')} đ</span></div>
                 </div>
 
                 <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', color: '#111827' }}>Danh sách món ăn</h3>
@@ -148,13 +158,17 @@ export default function StaffOrders() {
                       <tr style={{ borderBottom: '1px solid #d1d5db', textAlign: 'left', color: '#4b5563' }}>
                         <th style={{ padding: '0.5rem' }}>Mã Món</th>
                         <th style={{ padding: '0.5rem' }}>Số lượng</th>
+                        <th style={{ padding: '0.5rem', textAlign: 'right' }}>Thành tiền</th>
                       </tr>
                     </thead>
                     <tbody>
                       {selectedOrder.danhSachChiTiet.map((item, index) => (
                         <tr key={index} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                          <td style={{ padding: '0.75rem 0.5rem', fontWeight: '500', color: '#000000ff' }}>{item.maMon}</td>
-                          <td style={{ padding: '0.75rem 0.5rem', color: '#000000ff' }}>{item.soLuong}</td>
+                          <td style={{ padding: '0.75rem 0.5rem', fontWeight: '500', color: '#111827' }}>{item.maMon}</td>
+                          <td style={{ padding: '0.75rem 0.5rem', color: '#111827' }}>{item.soLuong}</td>
+                          <td style={{ padding: '0.75rem 0.5rem', color: '#10b981', fontWeight: 'bold', textAlign: 'right' }}>
+                            {item.thanhTien?.toLocaleString('vi-VN')} đ
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -165,12 +179,26 @@ export default function StaffOrders() {
               </>
             ) : null}
 
-            {/* Thanh toán & In hóa đơn cho Staff */}
+            {/* 3. KHU VỰC NHẬP MÃ GIẢM GIÁ & THANH TOÁN */}
             {selectedOrder && selectedOrder.trangThai !== 'DaThanhToan' && (
-              <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center' }}>
-                <button onClick={() => handleCheckout(selectedOrder.maHD)} style={{ backgroundColor: '#10b981', color: 'white', border: 'none', padding: '1rem 2rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1.1rem', width: '100%' }}>
-                  Thanh Toán & In Hóa Đơn
-                </button>
+              <div style={{ marginTop: '2rem', borderTop: '2px dashed #e5e7eb', paddingTop: '1.5rem' }}>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', backgroundColor: '#eff6ff', padding: '1rem', borderRadius: '8px' }}>
+                  <label style={{ fontWeight: 'bold', color: '#1e3a8a', whiteSpace: 'nowrap' }}>Áp dụng mã KM:</label>
+                  <input 
+                    type="text" 
+                    placeholder="VD: KHAITRUONG" 
+                    value={maKhuyenMai}
+                    onChange={(e) => setMaKhuyenMai(e.target.value)}
+                    style={{ flex: 1, padding: '0.75rem', borderRadius: '6px', border: '1px solid #bfdbfe', textTransform: 'uppercase', outline: 'none' }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button onClick={() => handleCheckout(selectedOrder.maHD)} style={{ backgroundColor: '#10b981', color: 'white', border: 'none', padding: '1rem 2rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1.1rem', width: '100%', display: 'flex', justifyContent: 'center', gap: '0.5rem', alignItems: 'center' }}>
+                    <CheckCircle size={20} /> Thanh Toán & In Hóa Đơn
+                  </button>
+                </div>
               </div>
             )}
           </div>

@@ -12,7 +12,7 @@ namespace BE.Models
         
         public float GiaTien { get; set; }
         
-        public string TrangThai { get; set; }
+        public string TrangThai { get; set; } = "Còn hàng";
 
         public string? HinhAnh { get; set; }
 
