@@ -10,6 +10,7 @@ import CustomerLayout from './customer/components/CustomerLayout';
 import OrderSetup from './customer/pages/OrderSetup';
 import MenuPage from './customer/pages/Menu';
 import Checkout from './customer/pages/Checkout';
+import TrackOrder from './customer/pages/TrackOrder';
 
 // --- ADMIN COMPONENTS ---
 import AdminDashboard from './admin/pages/AdminDashboard';
@@ -63,6 +64,7 @@ function AppRoutes() {
         <Route index element={<OrderSetup tables={tables} />} />
         <Route path="menu" element={<MenuPage menu={menu} addToCart={addToCart} />} />
         <Route path="checkout" element={<Checkout cart={cart} setCart={setCart} onPlaceOrder={handlePlaceOrder} />} />
+        <Route path="track-order" element={<TrackOrder />} />
       </Route>
 
       {/* --- ADMIN ROUTES --- */}

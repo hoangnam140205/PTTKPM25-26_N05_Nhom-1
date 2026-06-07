@@ -227,7 +227,7 @@ textarea {
 .admin-table td {
   padding: 1rem;
   border-bottom: 1px solid var(--border-color);
-  color: var(--text-main);
+  color: #000000;
 }
 
 .admin-table tr:last-child td {

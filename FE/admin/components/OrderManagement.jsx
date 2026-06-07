@@ -5,7 +5,7 @@ import axiosClient from '../../api/axiosClient';
 export default function OrderManagement() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // State cho Modal Xem chi tiết
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -71,7 +71,7 @@ export default function OrderManagement() {
     e.preventDefault();
     try {
       await axiosClient.put(
-        `/admin/HoaDon/${selectedOrder.maHD}/mon/${changeItemModal.itemInfo.maMon}`, 
+        `/admin/HoaDon/${selectedOrder.maHD}/mon/${changeItemModal.itemInfo.maMon}`,
         changeItemData
       );
       alert("Đổi món thành công!");
@@ -84,7 +84,7 @@ export default function OrderManagement() {
     }
   };
 
-  if (isLoading) return <div className="text-center p-10"><h2 style={{color: '#f59e0b'}}>Đang tải danh sách hóa đơn...</h2></div>;
+  if (isLoading) return <div className="text-center p-10"><h2 style={{ color: '#f59e0b' }}>Đang tải danh sách hóa đơn...</h2></div>;
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: '2rem' }}>
@@ -119,18 +119,18 @@ export default function OrderManagement() {
                   ${order.tongTien?.toLocaleString()}
                 </td>
                 <td style={{ padding: '1rem' }}>
-                  <span style={{ 
+                  <span style={{
                     display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
                     padding: '0.25rem 0.75rem', borderRadius: '99px', fontSize: '0.875rem', fontWeight: 'bold',
                     backgroundColor: order.trangThai === 'DaThanhToan' ? '#d1fae5' : order.trangThai === 'DaHoanThanh' ? '#d1fae5' : order.trangThai === 'DangThucHien' ? '#fef3c7' : '#eff6ff',
                     color: order.trangThai === 'DaThanhToan' ? '#059669' : order.trangThai === 'DaHoanThanh' ? '#059669' : order.trangThai === 'DangThucHien' ? '#d97706' : '#3b82f6'
                   }}>
                     {order.trangThai === 'DaThanhToan' || order.trangThai === 'DaHoanThanh' ? <CheckCircle size={14} /> : <Clock size={14} />}
-                    {order.trangThai === 'DaThanhToan' ? 'Đã Thanh Toán' : 
-                     order.trangThai === 'DaHoanThanh' ? 'Đã Hoàn Thành' :
-                     order.trangThai === 'DangThucHien' ? 'Đang Thực Hiện' :
-                     order.trangThai === 'TiepNhan' ? 'Tiếp Nhận' :
-                     'Chưa Thanh Toán'}
+                    {order.trangThai === 'DaThanhToan' ? 'Đã Thanh Toán' :
+                      order.trangThai === 'DaHoanThanh' ? 'Đã Hoàn Thành' :
+                        order.trangThai === 'DangThucHien' ? 'Đang Thực Hiện' :
+                          order.trangThai === 'TiepNhan' ? 'Tiếp Nhận' :
+                            'Chưa Thanh Toán'}
                   </span>
                 </td>
                 <td style={{ padding: '1rem', textAlign: 'center' }}>
@@ -155,7 +155,7 @@ export default function OrderManagement() {
       {isDetailModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
           <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '16px', width: '100%', maxWidth: '700px', maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box' }}>
-            
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #e5e7eb', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
               <h2 style={{ margin: 0, color: '#111827', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Receipt color="#f59e0b" /> Chi Tiết Hóa Đơn: #{selectedOrder?.maHD}
@@ -170,22 +170,22 @@ export default function OrderManagement() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem', backgroundColor: '#f9fafb', padding: '1rem', borderRadius: '8px' }}>
                   <div><strong style={{ color: '#4b5563' }}>Bàn:</strong> {selectedOrder.maBan || 'Không'}</div>
                   <div><strong style={{ color: '#4b5563' }}>Trạng thái:</strong> {
-                    selectedOrder.trangThai === 'DaThanhToan' ? 'Đã thanh toán' : 
-                    selectedOrder.trangThai === 'DaHoanThanh' ? 'Đã hoàn thành' :
-                    selectedOrder.trangThai === 'DangThucHien' ? 'Đang thực hiện' :
-                    selectedOrder.trangThai === 'TiepNhan' ? 'Tiếp nhận' :
-                    'Chưa thanh toán'
+                    selectedOrder.trangThai === 'DaThanhToan' ? 'Đã thanh toán' :
+                      selectedOrder.trangThai === 'DaHoanThanh' ? 'Đã hoàn thành' :
+                        selectedOrder.trangThai === 'DangThucHien' ? 'Đang thực hiện' :
+                          selectedOrder.trangThai === 'TiepNhan' ? 'Tiếp nhận' :
+                            'Chưa thanh toán'
                   }</div>
                   <div><strong style={{ color: '#4b5563' }}>Thu ngân:</strong> {selectedOrder.thuNganMaNV || 'N/A'}</div>
                   <div><strong style={{ color: '#4b5563' }}>Tổng tiền:</strong> <span style={{ color: '#d97706', fontWeight: 'bold', fontSize: '1.25rem' }}>${selectedOrder.tongTien?.toLocaleString()}</span></div>
                 </div>
 
                 <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', color: '#111827' }}>Danh sách món ăn</h3>
-                
+
                 {selectedOrder.danhSachChiTiet && selectedOrder.danhSachChiTiet.length > 0 ? (
                   <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
                     <thead>
-                      <tr style={{ borderBottom: '1px solid #d1d5db', textAlign: 'left', color: '#4b5563' }}>
+                      <tr style={{ borderBottom: '1px solid #000000ff', textAlign: 'left', color: '#4b5563' }}>
                         <th style={{ padding: '0.5rem' }}>Mã Món</th>
                         <th style={{ padding: '0.5rem' }}>Số lượng</th>
                         <th style={{ padding: '0.5rem', textAlign: 'right' }}>Thao tác</th>
@@ -193,9 +193,9 @@ export default function OrderManagement() {
                     </thead>
                     <tbody>
                       {selectedOrder.danhSachChiTiet.map((item, index) => (
-                        <tr key={index} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                          <td style={{ padding: '0.75rem 0.5rem', fontWeight: '500' }}>{item.maMon}</td>
-                          <td style={{ padding: '0.75rem 0.5rem' }}>{item.soLuong}</td>
+                        <tr key={index} style={{ borderBottom: '1px solid #ffffffff' }}>
+                          <td style={{ padding: '0.75rem 0.5rem', fontWeight: '500', color: '#000000ff' }}>{item.maMon}</td>
+                          <td style={{ padding: '0.75rem 0.5rem', color: '#000000ff' }}>{item.soLuong}</td>
                           <td style={{ padding: '0.75rem 0.5rem', textAlign: 'right' }}>
                             {/* Nút Đổi món & Hủy món - Chỉ hiện khi hóa đơn chưa thanh toán */}
                             {selectedOrder.trangThai !== 'DaThanhToan' && (
@@ -232,13 +232,13 @@ export default function OrderManagement() {
             <form onSubmit={submitChangeItem} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Mã Món Mới</label>
-                <input placeholder="VD: M05" value={changeItemData.maMonMoi} onChange={e => setChangeItemData({...changeItemData, maMonMoi: e.target.value})} required style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db', boxSizing: 'border-box' }} />
+                <input placeholder="VD: M05" value={changeItemData.maMonMoi} onChange={e => setChangeItemData({ ...changeItemData, maMonMoi: e.target.value })} required style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db', boxSizing: 'border-box' }} />
               </div>
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.5rem' }}>Số lượng mới</label>
-                <input type="number" min="1" value={changeItemData.soLuongMoi} onChange={e => setChangeItemData({...changeItemData, soLuongMoi: parseInt(e.target.value) || 1})} required style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db', boxSizing: 'border-box' }} />
+                <input type="number" min="1" value={changeItemData.soLuongMoi} onChange={e => setChangeItemData({ ...changeItemData, soLuongMoi: parseInt(e.target.value) || 1 })} required style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db', boxSizing: 'border-box' }} />
               </div>
-              
+
               <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
                 <button type="submit" style={{ flex: 1, backgroundColor: '#3b82f6', color: 'white', border: 'none', padding: '0.75rem', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>Xác nhận đổi</button>
                 <button type="button" onClick={() => setChangeItemModal({ isOpen: false, itemInfo: null })} style={{ flex: 1, backgroundColor: '#f3f4f6', color: '#4b5563', border: 'none', padding: '0.75rem', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>Hủy</button>

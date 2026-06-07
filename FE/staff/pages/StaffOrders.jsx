@@ -5,7 +5,7 @@ import axiosClient from '../../api/axiosClient';
 export default function StaffOrders() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // State cho Modal Xem chi tiết
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -44,7 +44,7 @@ export default function StaffOrders() {
   const handleCheckout = async (maHD) => {
     if (window.confirm('Xác nhận thanh toán và in hóa đơn?')) {
       try {
-        await axiosClient.put(`/admin/HoaDon/${maHD}/thanhtoan`);
+        await axiosClient.put(`/admin/HoaDon/${maHD}/thanh-toan`, {});
         alert("Thanh toán thành công! Đang in hóa đơn...");
         viewOrderDetails(maHD);
         fetchOrders();
@@ -54,7 +54,7 @@ export default function StaffOrders() {
     }
   };
 
-  if (isLoading) return <div className="text-center p-10"><h2 style={{color: '#f59e0b'}}>Đang tải danh sách hóa đơn...</h2></div>;
+  if (isLoading) return <div className="text-center p-10"><h2 style={{ color: '#f59e0b' }}>Đang tải danh sách hóa đơn...</h2></div>;
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: '2rem' }}>
@@ -89,7 +89,7 @@ export default function StaffOrders() {
                   ${order.tongTien?.toLocaleString()}
                 </td>
                 <td style={{ padding: '1rem' }}>
-                  <span style={{ 
+                  <span style={{
                     display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
                     padding: '0.25rem 0.75rem', borderRadius: '99px', fontSize: '0.875rem', fontWeight: 'bold',
                     backgroundColor: order.trangThai === 'DaThanhToan' ? '#d1fae5' : '#fef3c7',
@@ -121,7 +121,7 @@ export default function StaffOrders() {
       {isDetailModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
           <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '16px', width: '100%', maxWidth: '700px', maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box' }}>
-            
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #e5e7eb', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
               <h2 style={{ margin: 0, color: '#111827', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Receipt color="#f59e0b" /> Chi Tiết Hóa Đơn: #{selectedOrder?.maHD}
@@ -141,7 +141,7 @@ export default function StaffOrders() {
                 </div>
 
                 <h3 style={{ borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', color: '#111827' }}>Danh sách món ăn</h3>
-                
+
                 {selectedOrder.danhSachChiTiet && selectedOrder.danhSachChiTiet.length > 0 ? (
                   <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
                     <thead>
@@ -153,8 +153,8 @@ export default function StaffOrders() {
                     <tbody>
                       {selectedOrder.danhSachChiTiet.map((item, index) => (
                         <tr key={index} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                          <td style={{ padding: '0.75rem 0.5rem', fontWeight: '500' }}>{item.maMon}</td>
-                          <td style={{ padding: '0.75rem 0.5rem' }}>{item.soLuong}</td>
+                          <td style={{ padding: '0.75rem 0.5rem', fontWeight: '500', color: '#000000ff' }}>{item.maMon}</td>
+                          <td style={{ padding: '0.75rem 0.5rem', color: '#000000ff' }}>{item.soLuong}</td>
                         </tr>
                       ))}
                     </tbody>
