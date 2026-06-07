@@ -4,20 +4,17 @@ import AdminSidebar from '../components/AdminSidebar';
 
 export default function AdminDashboard() {
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#111827' }}>
       
-      {/* Sidebar Navigation */}
+      {/* 1. Thanh Sidebar cố định bên trái */}
       <AdminSidebar />
 
-      {/* Main Content Area */}
-      <main style={{ flex: 1, overflowY: 'auto', padding: '2rem' }}>
-        <div className="animate-fade-in" style={{ height: '100%' }}>
-          
-          {/* Outlet chính là cái "lỗ hổng" để React Router nhét các component con (Menu, Table, Report...) vào đây */}
-          <Outlet />
-
-        </div>
-      </main>
+      {/* 2. Khu vực nội dung linh hoạt bên phải */}
+      <div style={{ flex: 1, height: '100vh', overflowY: 'auto' }}>
+        {/* Outlet sẽ tự động render AdminReports, MenuManagement, v.v... dựa trên URL */}
+        <Outlet />
+      </div>
+      
     </div>
   );
 }
